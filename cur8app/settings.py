@@ -64,7 +64,7 @@ ROOT_URLCONF = 'cur8app.urls'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-ASSEMBLY_AI_API_KEY = os.getenv('ASSEMBLY_AI_API_KEY')
+ASSEMBLY_AI_API_KEY = "afd289aac9904a518a04271653628427"
 
 
 TEMPLATES = [
