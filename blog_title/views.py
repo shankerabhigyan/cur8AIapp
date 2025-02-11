@@ -25,13 +25,13 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             
             client = OpenAI(api_key=api_key)
             
-            base_prompt = f"""Generate ONLY ONE unique and engaging blog post titles for the following content. 
+            base_prompt = f"""Generate ONLY ONE unique and engaging blog post title for the following content. 
 Content: {content[:1000]}...
 
 Requirements:
-- Titles should be clear and concise
+- Title should be clear and concise
 - Maximum length of 60 characters
-- Should focus on the value proposition and SEO optimization
+- Should focus on value proposition, catchiness & SEO optimization
 Style :
 """
             

@@ -26,10 +26,10 @@ class TranscriptionViewSet(viewsets.ModelViewSet):
         aai.settings.api_key = settings.ASSEMBLY_AI_API_KEY
         
         # Create a temporary file to save the uploaded audio
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp_file:
-            for chunk in audio_file.chunks():
-                tmp_file.write(chunk)
-            tmp_file_path = tmp_file.name
+        # with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp_file:
+        #     for chunk in audio_file.chunks():
+        #         tmp_file.write(chunk)
+        #     tmp_file_path = tmp_file.name
 
         try:
             # Configure transcription with speaker labels
