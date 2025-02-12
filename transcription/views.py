@@ -77,10 +77,10 @@ class TranscriptionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
-        finally:
-            # Clean up the temporary file
-            import os
-            try:
-                os.unlink(tmp_file_path)
-            except:
-                pass
+        # finally:
+        #     # Clean up the temporary file
+        #     import os
+        #     try:
+        #         os.unlink(tmp_file_path)
+        #     except:
+        #         pass

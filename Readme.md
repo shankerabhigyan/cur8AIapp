@@ -5,6 +5,10 @@ This Readme guides you through the step-by-step setup and testing of endpoints.
 
 ## Setup
 - Pull the repository and navigate to the project directory.
+- Create a virtual environment using the following command:
+```bash
+python3 -m venv envcur8
+```
 - Install the required packages using the following command:
 ```bash
 pip install -r requirements.txt
