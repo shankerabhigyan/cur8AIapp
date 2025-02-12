@@ -43,6 +43,13 @@ In `call.ipynb` replace my file path with the path to your audio file and run th
 ```bash
 curl -X POST "http://localhost:8000/api/v1/transcription/transcribe/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "audio_file=@/home/shankerabhigyan/code/cur8labs/audios/20230607_me_canadian_wildfires.mp3"
 ```
+```powershell
+# powershell equivalent
+curl.exe -X POST "http://localhost:8000/api/v1/transcription/transcribe/" `
+    -H "accept: application/json" `
+    -H "Content-Type: multipart/form-data" `
+    -F "audio_file=@C:\path\to\your\audio\20230607_me_canadian_wildfires.mp3"
+```
 Replace the file path associated with audio_file with the path to your audio file and run the command to test the endpoint.
 - Sample Response:
 ```txt
