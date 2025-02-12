@@ -8,6 +8,7 @@ This Readme guides you through the step-by-step setup and testing of endpoints.
 - Create a virtual environment using the following command:
 ```bash
 python3 -m venv envcur8
+source envcur8/bin/activate
 ```
 - Install the required packages using the following command:
 ```bash
@@ -59,13 +60,12 @@ The application uses 1. Fine-tuned T5-Base model finetuned for title generation 
 ```python
 import requests
 
-def generate_blog_titles(content: str, model_choice:str, api_key: str, style: str = 'descriptive') -> dict:
+def generate_blog_titles(content: str, model_choice:str, style: str = 'descriptive') -> dict:
     url = "http://localhost:8000/blog_title/posts/generate_titles/"
 
     data = {
         "content": content,
         "model_choice": model_choice,
-        "openai_key": api_key,
         "style": "descriptive",
         "max_titles": 3
     }
@@ -77,7 +77,7 @@ def generate_blog_titles(content: str, model_choice:str, api_key: str, style: st
     except requests.exceptions.RequestException as e:
         print(f"Error: {str(e)}")
         return None
-
+    
 content = """
     Artificial Intelligence is transforming the way we work and live. From chatbots to 
     autonomous vehicles, AI technologies are becoming increasingly integrated into our 
@@ -86,11 +86,14 @@ content = """
     evolving field.
 """
 
-api_key = "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"
 model_choice = "gpt" # alternative : t5-finetuned for title generation (local model)
 style = "descriptive" # alternative : "creative" are the other 2 options currently hardcoded while prompting
-result = generate_blog_titles(content, model_choice, api_key)
+result = generate_blog_titles(content, model_choice)
 print(result)
+```
+- Equivalent CURL Request:
+```bash
+curl -X POST "http://localhost:8000/blog_title/posts/generate_titles/" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"content\": \"Artificial Intelligence is transforming the way we work and live. From chatbots to autonomous vehicles, AI technologies are becoming increasingly integrated into our daily lives. This post explores the current state of AI technology, its applications across different industries, and what the future might hold for this rapidly evolving field.\", \"model_choice\": \"gpt\", \"style\": \"descriptive\", \"max_titles\": 3}"
 ```
 - Sample Response:
 ```txt

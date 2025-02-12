@@ -20,7 +20,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
 
-    def _generate_titles_with_openai(self, content: str, api_key: str, style: str = 'descriptive') -> list:
+    def _generate_titles_with_openai(self, content: str, style: str = 'descriptive') -> list:
         """Generate blog-post titles using OpenAI API"""
         try:
             logger.info(f"Generating titles for content length: {len(content)}, style: {style}")
