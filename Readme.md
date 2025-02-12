@@ -99,6 +99,22 @@ print(result)
 ```bash
 curl -X POST "http://localhost:8000/blog_title/posts/generate_titles/" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"content\": \"Artificial Intelligence is transforming the way we work and live. From chatbots to autonomous vehicles, AI technologies are becoming increasingly integrated into our daily lives. This post explores the current state of AI technology, its applications across different industries, and what the future might hold for this rapidly evolving field.\", \"model_choice\": \"gpt\", \"style\": \"descriptive\", \"max_titles\": 3}"
 ```
+```powershell
+# for powershell
+$headers = @{
+    "accept" = "application/json"
+    "Content-Type" = "application/json"
+}
+
+$body = @{
+    "content" = "Artificial Intelligence is transforming the way we work and live. From chatbots to autonomous vehicles, AI technologies are becoming increasingly integrated into our daily lives. This post explores the current state of AI technology, its applications across different industries, and what the future might hold for this rapidly evolving field."
+    "model_choice" = "gpt"
+    "style" = "descriptive"
+    "max_titles" = 3
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:8000/blog_title/posts/generate_titles/" -Method Post -Headers $headers -Body $body
+```
 - Sample Response:
 ```txt
 {'titles': [{'title': '"AI Revolution: Transforming Industries and Daily Life"'},
