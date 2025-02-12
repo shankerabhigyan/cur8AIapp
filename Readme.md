@@ -42,7 +42,7 @@ curl -X POST "http://localhost:8000/api/v1/transcription/transcribe/" -H "accept
 ```
 Replace the file path associated with audio_file with the path to your audio file and run the command to test the endpoint.
 - Sample Response:
-```json
+```txt
 {'job_id': 4,
  'text': "Smoke from hundreds of wildfires in Canada is triggering air quality alerts throughout the US Skylines from Maine to Maryland to Minnesota are gray and smoggy......"
  'utterances': [{'speaker': 'A',
@@ -93,7 +93,7 @@ result = generate_blog_titles(content, model_choice, api_key)
 print(result)
 ```
 - Sample Response:
-```json
+```txt
 {'titles': [{'title': '"AI Revolution: Transforming Industries and Daily Life"'},
   {'title': '"How Is AI Revolutionizing Our Daily Lives and Industries?"'},
   {'title': 'Discover How AI is Revolutionizing Work and Life Today'}]}
