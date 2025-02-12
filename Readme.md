@@ -54,6 +54,8 @@ Replace the file path associated with audio_file with the path to your audio fil
    'end': 26780},
   {'speaker': 'B', 'text': 'Good morning.', 'start': 27820, 'end': 28884}...]
 }
+
+This endpoint uses AssemblyAI API for transcription and diarization.
 ```
 
 ### Blog Title Generation
@@ -102,6 +104,15 @@ curl -X POST "http://localhost:8000/blog_title/posts/generate_titles/" -H "accep
 {'titles': [{'title': '"AI Revolution: Transforming Industries and Daily Life"'},
   {'title': '"How Is AI Revolutionizing Our Daily Lives and Industries?"'},
   {'title': 'Discover How AI is Revolutionizing Work and Life Today'}]}
+```
+
+This endpoint can be customized to use either the OpenAI API or the local T5 model(https://huggingface.co/fabiochiu/t5-base-medium-title-generation) for title generation. The OpenAI model can also be custom prompted to generate titles according to one of three currently hardcoded styles: descriptive, question, and action.
+```python
+style_prompts = {
+                "descriptive": "Generate straightforward, descriptive titles that clearly state the main topic.",
+                "question" : "Generate titles in the form of intriguing question that provoke curiosity.",
+                "action" : "Generate action-oriented titles that start with verbs and emphasize what readers will learn or achieve."
+            }
 ```
 
 ## Note
