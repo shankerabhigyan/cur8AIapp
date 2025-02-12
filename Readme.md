@@ -15,7 +15,7 @@ source envcur8/bin/activate
 pip install -r requirements.txt
 ```
 **IMPORTANT**:
-- This project uses OpenAI API(optional) and AssemblyAI APIs to function, the API keys can be found in the `cur8app/settings.py` file @line 20. Please copy the API keys from the Google Document shared on my submission email and paste them in the file before proceeding.
+- This project uses OpenAI API(optional) and AssemblyAI APIs to function, the API keys should be placed in `cur8app/settings.py` file @line 20. Please copy the API keys from the Google Document shared on my submission email and paste them in the file against the corresponding variables before proceeding.
 
 - Run the following command to start the server:
 ```bash
