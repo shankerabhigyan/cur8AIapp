@@ -4,3 +4,5 @@ celery
 redis
 requests
 python-dotenv # optional if conda
+torch
+transformers
