@@ -14,7 +14,9 @@ source envcur8/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+**IMPORTANT**:
 - This project uses OpenAI API(optional) and AssemblyAI APIs to function, the API keys can be found in the `cur8app/settings.py` file @line 20. Please copy the API keys from the Google Document shared on my submission email and paste them in the file before proceeding.
+
 - Run the following command to start the server:
 ```bash
 python manage.py makemigrations
@@ -104,3 +106,4 @@ curl -X POST "http://localhost:8000/blog_title/posts/generate_titles/" -H "accep
 
 ## Note
 - In case of any connection timeouts while testing the endpoints in the notebook, please wait for a few seconds and try again.
+- 
