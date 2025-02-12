@@ -25,7 +25,12 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         try:
             logger.info(f"Generating titles for content length: {len(content)}, style: {style}")
             
-            client = OpenAI(api_key=api_key)
+            # get api key from settings
+            from django.conf import settings
+            if not hasattr(settings, 'OPENAI_API_KEY') or settings.OPENAI_API_KEY=="":
+                raise ValidationError("OpenAI API key not found in settings")
+                
+            client = OpenAI(api_key=settings.OPENAI_API_KEY)
             
             base_prompt = f"""Generate ONE unique and engaging blog post title for the following content. 
     Content: {content[:1000]}...
@@ -97,7 +102,6 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             if model_choice == 'gpt':
                 titles = self._generate_titles_with_openai(
                     content=serializer.validated_data['content'],
-                    api_key=serializer.validated_data['openai_key'],
                     style=serializer.validated_data.get('style', 'descriptive')
                 )
             else:  # using t5

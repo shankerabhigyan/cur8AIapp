@@ -15,7 +15,6 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
 class TitleGenerationRequestSerializer(serializers.Serializer):
     content = serializers.CharField(required=True)
-    openai_key = serializers.CharField(required=True)
     max_titles = serializers.IntegerField(default=3, min_value=1, max_value=5)
     style = serializers.ChoiceField(
         choices=['descriptive', 'question', 'action'],

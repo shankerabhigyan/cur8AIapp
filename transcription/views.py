@@ -38,7 +38,7 @@ class TranscriptionViewSet(viewsets.ModelViewSet):
             
             # Start transcription
             transcript = transcriber.transcribe(
-                tmp_file_path,
+                audio_file,
                 config=config
             )
 

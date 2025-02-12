@@ -94,3 +94,6 @@ print(result)
   {'title': '"How Is AI Revolutionizing Our Daily Lives and Industries?"'},
   {'title': 'Discover How AI is Revolutionizing Work and Life Today'}]}
 ```
+
+## Note
+- In case of any connection timeouts while testing the endpoints in the notebook, please wait for a few seconds and try again.
