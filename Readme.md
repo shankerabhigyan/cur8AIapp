@@ -17,7 +17,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 ## Demo
-The server will run on `http://127.0.0.1:8000/` by default, refer to call.ipynb in the project root to directly test the endpoints.
+The server will run on `http://127.0.0.1:8000/` by default.
+NOTE: refer to `call.ipynb` in the project root to find the demo of the endpoints and helper functions to test the endpoints.
 ### Audio Transcription + Diarization
 - The endpoint for Audio Transcription + Diarization is `/api/v1/transcription/transcribe/` and it accepts a `POST` request with the following parameters:
     - `audio_file`: The audio file to be transcribed.
@@ -31,6 +32,11 @@ response = requests.post(url, files=files)
 response.json()
 ``` 
 In `call.ipynb` replace my file path with the path to your audio file and run the cell to test the endpoint.
+- Equivalent CURL Request:
+```bash
+curl -X POST "http://localhost:8000/api/v1/transcription/transcribe/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "audio_file=@/home/shankerabhigyan/code/cur8labs/audios/20230607_me_canadian_wildfires.mp3"
+```
+Replace the file path associated with audio_file with the path to your audio file and run the command to test the endpoint.
 - Sample Response:
 ```json
 {'job_id': 4,
@@ -41,4 +47,50 @@ In `call.ipynb` replace my file path with the path to your audio file and run th
    'end': 26780},
   {'speaker': 'B', 'text': 'Good morning.', 'start': 27820, 'end': 28884}...]
 }
+```
+
+### Blog Title Generation
+The application uses 1. Fine-tuned T5-Base model finetuned for title generation and 2. OpenAI's GPT-4o model. The user has can easily switch between the two models by changing the `model_choice` parameter in the request.
+- Sample Request:
+```python
+import requests
+
+def generate_blog_titles(content: str, model_choice:str, api_key: str, style: str = 'descriptive') -> dict:
+    url = "http://localhost:8000/blog_title/posts/generate_titles/"
+
+    data = {
+        "content": content,
+        "model_choice": model_choice,
+        "openai_key": api_key,
+        "style": "descriptive",
+        "max_titles": 3
+    }
+    
+    try:
+        response = requests.post(url, json=data)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {str(e)}")
+        return None
+
+content = """
+    Artificial Intelligence is transforming the way we work and live. From chatbots to 
+    autonomous vehicles, AI technologies are becoming increasingly integrated into our 
+    daily lives. This post explores the current state of AI technology, its applications
+    across different industries, and what the future might hold for this rapidly 
+    evolving field.
+"""
+
+api_key = "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"
+model_choice = "gpt" # alternative : t5-finetuned for title generation (local model)
+style = "descriptive" # alternative : "creative" are the other 2 options currently hardcoded while prompting
+result = generate_blog_titles(content, model_choice, api_key)
+print(result)
+```
+- Sample Response:
+```json
+{'titles': [{'title': '"AI Revolution: Transforming Industries and Daily Life"'},
+  {'title': '"How Is AI Revolutionizing Our Daily Lives and Industries?"'},
+  {'title': 'Discover How AI is Revolutionizing Work and Life Today'}]}
 ```

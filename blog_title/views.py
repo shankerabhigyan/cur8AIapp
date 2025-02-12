@@ -62,8 +62,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
                 # Extract title from response
                 title = response.choices[0].message.content.strip()
                 titles.append({
-                    'title': title,
-                    'confidence_score': 0.85 if response.choices[0].finish_reason == 'stop' else 0.7
+                    'title': title
                 })
 
             logger.info(f"Successfully generated {len(titles)} titles")
@@ -110,8 +109,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             response_data = {
                 'titles': [
                     {
-                        'title': title['title'],
-                        'confidence_score': title['confidence_score']
+                        'title': title['title']
                     } 
                     for title in titles
                 ]

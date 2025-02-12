@@ -41,7 +41,6 @@ class T5TitleGenerator:
                 title = self.tokenizer.decode(output, skip_special_tokens=True)
                 titles.append({
                     'title': title,
-                    'confidence_score': 0.8 # default value
                 })
 
             return titles
