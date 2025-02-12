@@ -6,3 +6,5 @@ requests
 python-dotenv # optional if conda
 torch
 transformers
+openai
+assemblyai

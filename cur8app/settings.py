@@ -18,9 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # API KEYS GO HERE #
-ASSEMBLY_AI_API_KEY = "afd289aac9904a518a04271653628427"
-OPENAI_API_KEY = "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"
-
+ASSEMBLY_AI_API_KEY = ""
+OPENAI_API_KEY = ""
 
 
 # Quick-start development settings - unsuitable for production
