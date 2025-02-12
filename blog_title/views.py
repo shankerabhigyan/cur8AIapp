@@ -10,6 +10,8 @@ from .serializers import (
     GeneratedTitleSerializer,
     TitleGenerationRequestSerializer
 )
+
+from .t5_title_service import T5TitleGenerator
 from openai import OpenAI
 
 logger = logging.getLogger(__name__)
@@ -19,48 +21,33 @@ class BlogPostViewSet(viewsets.ModelViewSet):
     serializer_class = BlogPostSerializer
 
     def _generate_titles_with_openai(self, content: str, api_key: str, style: str = 'descriptive') -> list:
-        """Generate titles using OpenAI API"""
+        """Generate blog-post titles using OpenAI API"""
         try:
             logger.info(f"Generating titles for content length: {len(content)}, style: {style}")
             
             client = OpenAI(api_key=api_key)
             
-            base_prompt = f"""Generate ONLY ONE unique and engaging blog post title for the following content. 
-Content: {content[:1000]}...
+            base_prompt = f"""Generate ONE unique and engaging blog post title for the following content. 
+    Content: {content[:1000]}...
 
-Requirements:
-- Title should be clear and concise
-- Maximum length of 60 characters
-- Should focus on value proposition, catchiness & SEO optimization
-Style :
-"""
+    Requirements:
+    - Title should be clear and concise
+    - Maximum length of 60 characters
+    - Should focus on value proposition, catchiness & SEO optimization
+    Style :
+    """
             
-            style_prompts = [
-                "descriptive: Generate a straightforward, descriptive title that clearly state the main topic.",
-                "question: Generate a title in the form of intriguing question that provoke curiosity.",
-                "action: Generate a action-oriented title that start with verbs and emphasize what readers will learn or achieve."
-            ]
+            style_prompts = {
+                "descriptive": "Generate straightforward, descriptive titles that clearly state the main topic.",
+                "question" : "Generate titles in the form of intriguing question that provoke curiosity.",
+                "action" : "Generate action-oriented titles that start with verbs and emphasize what readers will learn or achieve."
+            }
             
-            # prompt = base_prompt + "\n" + style_prompts.get(style, style_prompts['descriptive'])
-
-            prompts = []
-            for style_prompt in style_prompts:
-                prompts.append(base_prompt + "\n" + style_prompt)
-            
-            # response = client.chat.completions.create(
-            #     model="gpt-4o",
-            #     messages=[
-            #         {"role": "system", "content": "You are a professional blog title generator."},
-            #         {"role": "user", "content": prompt}
-            #     ],
-            #     temperature=0.7,
-            #     max_tokens=150,
-            #     n=1
-            # )
-
-            responses = []
-
-            for prompt in prompts:
+            # Create three separate prompts for each style
+            titles = []
+            for style_name, style_prompt in style_prompts.items():
+                prompt = base_prompt + "\n" + style_prompt
+                
                 response = client.chat.completions.create(
                     model="gpt-4o",
                     messages=[
@@ -69,20 +56,15 @@ Style :
                     ],
                     temperature=0.7,
                     max_tokens=150,
-                    n=1
+                    n=1  # One title per style
                 )
-                responses.append(response)
-
-            titles = []
-            for response in responses:
-                for choice in response.choices:
-                    title = choice.message.content.strip()
-                    # Remove numbered bullets if present
-                    title = title.split('. ', 1)[-1] if '. ' in title else title
-                    titles.append({
-                        'title': title,
-                        'confidence_score': choice.finish_reason == 'stop' and 0.85 or 0.7
-                    })
+                
+                # Extract title from response
+                title = response.choices[0].message.content.strip()
+                titles.append({
+                    'title': title,
+                    'confidence_score': 0.85 if response.choices[0].finish_reason == 'stop' else 0.7
+                })
 
             logger.info(f"Successfully generated {len(titles)} titles")
             return titles
@@ -92,40 +74,47 @@ Style :
             logger.error(traceback.format_exc())
             raise
 
+    def _generate_titles_with_t5(self, content: str, max_titles: int = 3) -> list:
+        """Generate titles using T5 model"""
+        try:
+            generator = T5TitleGenerator()
+            return generator.generate_titles(content, max_titles)
+        except Exception as e:
+            logger.error(f"Error in _generate_titles_with_t5: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+
     @action(detail=False, methods=['post'])
     def generate_titles(self, request):
         try:
             logger.info("Received title generation request")
-            logger.info(f"Request data: {request.data}")
             
             serializer = TitleGenerationRequestSerializer(data=request.data)
             if not serializer.is_valid():
-                logger.error(f"Validation error: {serializer.errors}")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-            titles = self._generate_titles_with_openai(
-                content=serializer.validated_data['content'],
-                api_key=serializer.validated_data['openai_key'],
-                style=serializer.validated_data['style']
-            )
+            model_choice = serializer.validated_data.get('model_choice', 'gpt')
             
-            blog_post = BlogPost.objects.create(
-                title="Temporary Title",
-                content=serializer.validated_data['content']
-            )
-            
-            generated_titles = []
-            for title_data in titles:
-                generated_title = GeneratedTitle.objects.create(
-                    blog_post=blog_post,
-                    title=title_data['title'],
-                    confidence_score=title_data['confidence_score']
+            if model_choice == 'gpt':
+                titles = self._generate_titles_with_openai(
+                    content=serializer.validated_data['content'],
+                    api_key=serializer.validated_data['openai_key'],
+                    style=serializer.validated_data.get('style', 'descriptive')
                 )
-                generated_titles.append(generated_title)
+            else:  # using t5
+                titles = self._generate_titles_with_t5(
+                    content=serializer.validated_data['content'],
+                    max_titles=serializer.validated_data.get('max_titles', 3)
+                )
             
             response_data = {
-                'blog_post_id': blog_post.id,
-                'titles': GeneratedTitleSerializer(generated_titles, many=True).data
+                'titles': [
+                    {
+                        'title': title['title'],
+                        'confidence_score': title['confidence_score']
+                    } 
+                    for title in titles
+                ]
             }
             
             logger.info(f"Successfully generated titles. Response: {response_data}")
